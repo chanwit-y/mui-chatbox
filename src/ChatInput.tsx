@@ -1,15 +1,14 @@
 import React, { useState, useCallback, ChangeEvent, KeyboardEvent, FormEvent } from 'react';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
-import MicIcon from '@mui/icons-material/Mic';
 import SendIcon from '@mui/icons-material/Send';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
 
 interface ChatInputProps {
 	placeholder?: string;
 	onSend: (message: string) => void;
-	onMicClick?: () => void;
 	initialValue?: string;
 	maxWidth?: string | number;
 	backgroundColor?: string;
@@ -29,7 +28,6 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
 	placeholder = "Ask anything",
 	onSend,
-	onMicClick,
 	initialValue = "",
 	maxWidth = "700px",
 	backgroundColor = "#242141",
@@ -69,11 +67,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 		}
 	}, [handleSend]);
 
-	const handleMicButtonClick = useCallback(() => {
-		if (onMicClick && !disabled && !loading) {
-			onMicClick();
-		}
-	}, [onMicClick, disabled, loading]);
 
 	const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -100,13 +93,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 				boxSizing: 'border-box',
 				opacity: disabled ? 0.6 : 1,
 				transition: 'opacity 0.2s ease-in-out',
+				border: '1px solid #817e98',
 				...customSx,
 			}}
 			onSubmit={handleSubmit}
 			role="search"
 			aria-label="Chat input form"
 		>
-			<div style={{ display: 'flex', alignItems: 'end', width: '100%' }}>
+			<Box display='flex' alignItems='end' width='100%' height='100%' justifyContent='space-between'>
 				<InputBase
 					sx={{
 						ml: 1,
@@ -145,27 +139,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 					disabled={disabled}
 					autoFocus={autoFocus}
 				/>
-				{onMicClick && (
-					<IconButton
-						type="button"
-						sx={{
-							p: '10px',
-							color: iconColor,
-							'&:hover': {
-								backgroundColor: `${iconColor}20`,
-							},
-							'&:disabled': {
-								color: `${iconColor}50`,
-							},
-						}}
-						aria-label="Start voice input"
-						onClick={handleMicButtonClick}
-						disabled={disabled || loading}
-						tabIndex={0}
-					>
-						<MicIcon />
-					</IconButton>
-				)}
+				
 				<IconButton
 					type="submit"
 					sx={{
@@ -184,20 +158,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 				>
 					<SendIcon />
 				</IconButton>
-			</div>
+			</Box>
 			{showCharacterCount && maxLength && (
-				<div
+				<Box
 					id="character-count"
-					style={{
-						marginTop: '4px',
-						textAlign: 'right',
-						fontSize: '0.75rem',
-						color: isOverLimit ? '#ff6b6b' : placeholderColor,
-					}}
+					mt={0.5}
+					textAlign='right'
+					fontSize='0.75rem'
+					color={isOverLimit ? '#ff6b6b' : placeholderColor}
 					aria-live="polite"
 				>
 					{characterCount}/{maxLength}
-				</div>
+				</Box>
 			)}
 		</Paper>
 	);
