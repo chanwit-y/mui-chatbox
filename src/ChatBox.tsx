@@ -89,7 +89,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
 				isStreaming: true
 			};
 			setMessages(prev => [...prev, botResponse]);
-			setIsLoading(false); // Stop loading when response is added
+			// Note: Loading will be set to false when streaming completes
 		}, 1000); // 1 second delay to simulate processing
 	}, [onMessageSend]);
 
@@ -159,6 +159,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
 											: msg
 									)
 								);
+								// Unlock the input when streaming is complete
+								setIsLoading(false);
 							}}
 							onFeedback={handleFeedback}
 						/>

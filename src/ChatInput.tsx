@@ -47,11 +47,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 	const [inputValue, setInputValue] = useState<string>(initialValue);
 
 	const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		// Prevent any input changes when loading
+		if (loading) return;
+		
 		const newValue = event.target.value;
 		if (!maxLength || newValue.length <= maxLength) {
 			setInputValue(newValue);
 		}
-	}, [maxLength]);
+	}, [maxLength, loading]);
 
 	const handleSend = useCallback(() => {
 		const trimmedValue = inputValue.trim();
@@ -62,11 +65,17 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 	}, [inputValue, onSend, disabled, loading]);
 
 	const handleKeyPress = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
+		// Prevent any key interactions when loading
+		if (loading) {
+			event.preventDefault();
+			return;
+		}
+		
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
 			handleSend();
 		}
-	}, [handleSend]);
+	}, [handleSend, loading]);
 
 
 	const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -125,7 +134,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 							},
 						},
 					}}
-					placeholder={placeholder}
+					placeholder={loading ? "Generating response..." : placeholder}
 					inputProps={{
 						'aria-label': placeholder,
 						'aria-describedby': showCharacterCount ? 'character-count' : undefined,
