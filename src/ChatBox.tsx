@@ -3,7 +3,7 @@ import { Avatar, Box, Typography, useTheme } from "@mui/material";
 import ChatHeader from "./ChatHeader";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
-import { getRandomResponse } from "./demoResponses";
+import { getRandomResponse, getResponseByIndex, Source } from "./demoResponses";
 
 import logo from "./asset/amigo-logo.png";
 
@@ -14,6 +14,7 @@ interface Message {
 	sender: 'user' | 'bot';
 	timestamp: Date;
 	isStreaming?: boolean;
+	sources?: Source[];
 }
 
 interface ChatBoxProps {
@@ -81,12 +82,17 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
 
 		// Auto-generate demo response after a short delay
 		setTimeout(() => {
+			// Get a random response with sources
+			const randomIndex = Math.floor(Math.random() * 5); // 0-4 for our 5 demo responses
+			const fullResponse = getResponseByIndex(randomIndex);
+			
 			const botResponse: Message = {
 				id: (Date.now() + 1).toString(),
-				text: getRandomResponse(),
+				text: fullResponse.answer.content,
 				sender: 'bot',
 				timestamp: new Date(),
-				isStreaming: true
+				isStreaming: true,
+				sources: fullResponse.sources
 			};
 			setMessages(prev => [...prev, botResponse]);
 			// Note: Loading will be set to false when streaming completes
@@ -150,6 +156,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
 							isStreaming={message.isStreaming}
 							streamingSpeed={3}
 							streamingDelay={40}
+							sources={message.sources}
 							onStreamingComplete={() => {
 								// Update message to mark streaming as complete
 								setMessages(prev => 

@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Paper, Typography, useTheme, IconButton, Popover } from '@mui/material';
+import { Box, Paper, Typography, useTheme, IconButton, Popover, Fade } from '@mui/material';
 import { ThumbUp, ThumbDown } from '@mui/icons-material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { FeedbackPopover } from './Feedback';
+import { ChatReference } from './ChatReference';
+import { Source } from './demoResponses';
 
 interface ChatMessageProps {
   id: string;
@@ -17,6 +19,7 @@ interface ChatMessageProps {
   streamingDelay?: number; // milliseconds between chunks
   onStreamingComplete?: () => void;
   onFeedback?: (messageId: string, feedback: 'like' | 'dislike') => void;
+  sources?: Source[]; // Reference sources for bot messages
 }
 
 interface ChunkState {
@@ -33,7 +36,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   streamingSpeed = 2,
   streamingDelay = 50,
   onStreamingComplete,
-  onFeedback
+  onFeedback,
+  sources
 }) => {
   const theme = useTheme();
   const [chunkState, setChunkState] = useState<ChunkState>({
@@ -295,6 +299,19 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             }}
           />
         )}
+
+	{/* Show references only for bot messages with sources */}
+	{sender === 'bot' && sources && sources.length > 0 && (
+		<Fade 
+			in={chunkState.isComplete} 
+			timeout={800}
+			unmountOnExit
+		>
+			<Box>
+				<ChatReference sources={sources} />
+			</Box>
+		</Fade>
+	)}
         
         <Box display="flex" alignItems="center" justifyContent="space-between" mt={0.5}>
           <Typography 
