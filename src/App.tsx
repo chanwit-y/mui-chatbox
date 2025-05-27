@@ -1,7 +1,41 @@
 import MessageIcon from '@mui/icons-material/Message';
-import { Box, Fab, Fade, Popover } from '@mui/material';
+import { Box, Divider, Fab, Fade, Popover, ThemeProvider, createTheme } from '@mui/material';
 import { useState } from 'react';
 import { ChatBox } from './ChatBox';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#6a1b9a',
+      light: '#9c4dcc',
+      dark: '#4a148c',
+    },
+    secondary: {
+      main: '#e91e63',
+    },
+    background: {
+      default: '#0d082c',
+      paper: '#1a1a2e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: 'rgba(255, 255, 255, 0.7)',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
+      },
+    },
+  },
+});
 
 
 
@@ -20,7 +54,7 @@ export function App() {
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <Box
         sx={{ position: 'fixed', bottom: 16, right: 16 }}
       >
@@ -45,7 +79,9 @@ export function App() {
       >
         <ChatBox />
       </Popover>
-    </>
+
+     
+    </ThemeProvider>
   );
 }
 
