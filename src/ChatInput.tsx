@@ -2,6 +2,7 @@ import React, { useState, useCallback, ChangeEvent, KeyboardEvent, FormEvent } f
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
+import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
@@ -136,7 +137,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 					multiline
 					minRows={minRows}
 					maxRows={maxRows}
-					disabled={disabled}
+					disabled={disabled || loading}
 					autoFocus={autoFocus}
 				/>
 				
@@ -156,7 +157,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 					disabled={isSubmitDisabled}
 					tabIndex={0}
 				>
-					<SendIcon />
+					{loading ? (
+						<CircularProgress 
+							size={20} 
+							sx={{ color: iconColor }} 
+						/>
+					) : (
+						<SendIcon />
+					)}
 				</IconButton>
 			</Box>
 			{showCharacterCount && maxLength && (

@@ -1,4 +1,5 @@
-import MessageIcon from '@mui/icons-material/Message';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import CloseIcon from '@mui/icons-material/Close';
 import { Box, Divider, Fab, Fade, Popover, ThemeProvider, createTheme } from '@mui/material';
 import { useState } from 'react';
 import { ChatBox } from './ChatBox';
@@ -43,7 +44,11 @@ export function App() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    if (open) {
+      setAnchorEl(null); // Close if open
+    } else {
+      setAnchorEl(event.currentTarget); // Open if closed
+    }
   };
 
   const handleClose = () => {
@@ -58,15 +63,15 @@ export function App() {
       <Box
         sx={{ position: 'fixed', bottom: 16, right: 16 }}
       >
-        <Fab size="medium" onClick={handleClick}>
-          <MessageIcon />
+        <Fab size="medium" color='primary'  onClick={handleClick}>
+          {open ? <CloseIcon  /> : <ChatBubbleIcon  />}
         </Fab>
       </Box>
 
       <Popover
         id={id}
         open={open}
-        // onClose={handleClose}
+        onClose={handleClose}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
